@@ -1,36 +1,36 @@
 # codex-lb
 
-Public OLL4 patch overlay for [Soju06/codex-lb](https://github.com/Soju06/codex-lb).
+Public-safe OLL4 Docker overlay for [Soju06/codex-lb](https://github.com/Soju06/codex-lb).
 
-This repository does not republish the full upstream application source. It contains the
-public-safe Docker overlay, patch stack, and verification helpers we use on top of the
-upstream `ghcr.io/soju06/codex-lb:latest` image.
+This repository does not republish the full upstream application source. It keeps the OLL4-specific overlay, patch stack, and verification helpers that we apply on top of the upstream `ghcr.io/soju06/codex-lb:latest` image.
 
-## Upstream Origin
+## Upstream Attribution
 
 - Original upstream repository: `Soju06/codex-lb`
 - Upstream image base used here: `ghcr.io/soju06/codex-lb:latest`
-- Upstream project license and release history stay with the upstream repository
+- Upstream project license remains with the upstream repository
+
+## What OLL4 Changed
+
+- compatibility fixes for the OpenAI-compatible API surface
+- dashboard UX improvements such as clipboard and live-usage handling
+- route-selection, auto-model, and failover behavior patches
+- helper endpoints for plan capacity, weekly remaining, and live account usage
 
 ## What This Repo Contains
 
-- `Dockerfile`: builds the public OLL4 overlay on top of the upstream image
-- `patch-*.py`: public-safe patch stack for compatibility, routing, UI, and API behavior
-- `upgrade-and-verify.sh`: rebuild/redeploy helper
-- `verify-compat.sh`: validation helper after rebuilds/upgrades
+- `Dockerfile` for building the OLL4 overlay on top of the upstream image
+- `patch-*.py` scripts for public-safe runtime modifications
+- `upgrade-and-verify.sh` for rebuild and redeploy verification
+- `verify-compat.sh` for post-upgrade smoke validation
 
-## Public-Safe Patch Areas
+## Intentionally Excluded
 
-- model catalog and API compatibility fixes
-- dashboard clipboard and live-usage UI improvements
-- context overflow and overload/failover handling
-- OAuth provider, re-auth, and dialog compatibility fixes
-- auto-model and plan-priority routing improvements
-- weekly remaining and plan-capacity helper endpoints
-
-## Intentionally Excluded From The Public Export
-
-- `.env` files, `.secrets/`, tokens, passwords, and any private credentials
-- runtime SQLite stores, volume archives, and `runtime-state/` snapshots
+- `.env` files, private credentials, and tokens
+- runtime SQLite stores, backups, and environment snapshots
 - account-specific internal routing customizations
-- ad-hoc backups and other environment-specific runtime artifacts
+- ad-hoc operational artifacts that do not belong in a public source repo
+
+## License
+
+The overlay files in this repository are released under the MIT License. See [LICENSE](LICENSE).
