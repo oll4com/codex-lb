@@ -1,0 +1,18 @@
+services:
+  codex-lb:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: codex-lb-lab:clipboardfix
+    container_name: codex-lb
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "2455:2455"
+      - "1455:1455"
+    volumes:
+      - codex_lb_data:/var/lib/codex-lb
+
+volumes:
+  codex_lb_data:

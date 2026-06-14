@@ -1,0 +1,7 @@
+.env
+data/
+__pycache__/
+*.bak
+*.bak_*
+.secrets/
+backups_*/
