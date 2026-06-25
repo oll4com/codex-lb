@@ -55,10 +55,60 @@ def patch_plan_types() -> None:
     text = replace_once(
         path,
         text,
+        'ACCOUNT_PLAN_EQUIVALENTS: Final[dict[str, frozenset[str]]] = {\n'
+        '    "prolite": frozenset({"pro"}),\n'
+        '}\n',
+        'ACCOUNT_PLAN_EQUIVALENTS: Final[dict[str, frozenset[str]]] = {\n'
+        '    "prolite": frozenset({"pro"}),\n'
+        '}\n'
+        '\n'
+        'ACCOUNT_PLAN_PRIORITIES: Final[dict[str, int]] = {\n'
+        '    "free": 0,\n'
+        '    "plus": 10,\n'
+        '    "prolite": 20,\n'
+        '    "pro": 30,\n'
+        '    "edu": 40,\n'
+        '    "team": 50,\n'
+        '    "business": 60,\n'
+        '    "enterprise": 70,\n'
+        '}\n',
+        "add account plan priorities",
+    )
+    text = replace_once(
+        path,
+        text,
         "    normalized = cleaned.lower()\n    return normalized if normalized in RATE_LIMIT_PLAN_TYPES else None\n",
         "    normalized = ACCOUNT_PLAN_ALIASES.get(cleaned.lower(), cleaned.lower())\n"
         "    return normalized if normalized in RATE_LIMIT_PLAN_TYPES else None\n",
         "normalize rate limit aliases",
+    )
+    text = replace_once(
+        path,
+        text,
+        "def account_plan_matches_allowed(value: str | None, allowed_plans: AbstractSet[str]) -> bool:\n",
+        "def resolve_persisted_account_plan_type(\n"
+        "    current_value: str | None,\n"
+        "    observed_value: str | None,\n"
+        "    *,\n"
+        "    allow_downgrade: bool = False,\n"
+        ") -> str | None:\n"
+        "    current = canonicalize_account_plan_type(current_value) if current_value is not None else None\n"
+        "    observed = canonicalize_account_plan_type(observed_value) if observed_value is not None else None\n"
+        "    if observed is None:\n"
+        "        return current\n"
+        "    if current is None or allow_downgrade:\n"
+        "        return observed\n"
+        "    current_priority = ACCOUNT_PLAN_PRIORITIES.get(normalize_account_plan_type(current) or \"\")\n"
+        "    observed_priority = ACCOUNT_PLAN_PRIORITIES.get(normalize_account_plan_type(observed) or \"\")\n"
+        "    if current_priority is None or observed_priority is None:\n"
+        "        return observed\n"
+        "    if observed_priority >= current_priority:\n"
+        "        return observed\n"
+        "    return current\n"
+        "\n"
+        "\n"
+        "def account_plan_matches_allowed(value: str | None, allowed_plans: AbstractSet[str]) -> bool:\n",
+        "add persisted plan resolution helper",
     )
 
     path.write_text(text)
